@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import re
 from . import util
 import markdown
@@ -22,18 +22,24 @@ def random_page(request):
     length = len(list_entry)
     rand_num = random.randint(0, length-1)
     title=list_entry[rand_num]
-    p_html=""
-    #process the title and retrieve content   
-    lines = util.get_entry(title)
-    p_html = process(lines)
-    p_title = extract_title_body(p_html)
-    title_html = markdown_title_HTML(p_title)
-    body_html = markdown_body_HTML(p_title)  
-    return render(request, "encyclopedia/random_page.html",\
-                            {'title':title,'e_title':title_html,'md_html':body_html})
+    return redirect(title_page, title)
    
-def error_page(request):
-    return render(request,"encyclopedia/error_page.html" )
+#def error_page(request):
+    #print("error_page view invoked")
+    #return render(request,"encyclopedia/error_page.html" )
+
+def search_page(request):
+    print("search_page method is called")
+    searchItem = request.GET['q'] #'q' is the name of the form element - see layout.html
+    print(searchItem)
+    list_entry = util.list_entries() 
+    found = False
+    if searchItem in list_entry:
+        found = True
+        return redirect(title_page, searchItem)
+    else:
+        return render(request, "encyclopedia/search_page.html",\
+                {"found":found, "search":searchItem})
 
 def title_page(request, title):
     p_html=""
@@ -47,7 +53,7 @@ def title_page(request, title):
         return render(request, "encyclopedia/title_page.html",\
                             {'title':title,'e_title':title_html,'md_html':body_html})
     else:
-        return render(request,"encyclopedia/error_page.html")
+        return render(request,"encyclopedia/error_page.html",{"item":title})
 
 #processes the content to only include spaces
 def process(content):
