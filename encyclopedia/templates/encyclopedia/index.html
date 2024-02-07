@@ -1,12 +1,12 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    Home Page
+    Encyclopedia
 {% endblock %}
 
 {% block body %}
-    <h1>All Pages</h1>
-
+    <h1>All Entries</h1>
+    <p>Please click on the items below to see the complete description </p>
     <ul>
         {% for entry in entries %}
             <li> <a href="/wiki/{{entry}} ">{{ entry }} </a> </li>

@@ -6,4 +6,26 @@
 
 {% block body %}
     <h1>Create New Page</h1>
+    <form>
+        <div class="row"  style="padding: 0px;" >
+            <div class="title col-lg-3 col-md-6">
+                <p style="margin-top: 20px; font:bold;">Title:</p>
+                <input style="text-align:left; " class="title" type= "text" name="title" placeholder="Enter title">
+            </div>
+        </div>
+        <div class="row" style="padding: 0px;">
+            <div class="title col-lg-12" style="text-align:left;">
+                 <p style="font:bold; margin-top: 15px;"> Description: </p>
+                <textarea style="height:150px; width:350px;" class="description" name="desc"> </textarea>
+            </div>
+        </div>
+        <div class="row" style="padding: 0px;text-align:center;">
+            <div class="title col-md-4">
+                <button  class="submit" value="submit"> submit </button>
+            </div>
+        </div>
+    </form>
+    {% if exists %}
+        <p style="color:red"> This entry already exists.</p>
+    {% endif %}
 {% endblock %}
