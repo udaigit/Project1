@@ -1,0 +1,28 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Edit Page
+{% endblock %}
+
+{% block body %}
+    <h1>Edit Page</h1>
+    <form>
+        <div class="row"  style="padding: 0px;" >
+            <div class="title col-lg-3 col-md-6">
+                <p style="margin-top: 20px; font:bold;">Title:</p>
+                <input style="text-align:left;" readonly = "readonly" type= "text" name="edit_title" value={{f_title}}>
+            </div>
+        </div>
+        <div class="row" style="padding: 0px;">
+            <div class="title col-lg-12" style="text-align:left;">
+                 <p style="font:bold; margin-top: 15px;"> Description: </p>
+                <textarea style="height:200px; width:600px;" class="description" name="edit_desc"> {{f_body}} </textarea>
+            </div>
+        </div>
+        <div class="row" style="padding: 0px;text-align:center;">
+            <div class="title col-md-4">
+                <button  class="submit" value="submit"> Save </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
