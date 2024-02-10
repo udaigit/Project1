@@ -5,11 +5,12 @@
 {% endblock %}
 
 {% block body %}
-    <h1>All Entries</h1>
-    <p>Please click on the items below to see the complete description </p>
+    <h1>Entry Page</h1>
+    <p>Please click on the title of entry (left) below to view the complete description of entry. <br> Please click on the edit link (right) below to edit and save the entry  </p>
+
     <ul>
         {% for entry in entries %}
-            <li> <a href="/wiki/{{entry}} ">{{ entry }} </a> </li>
+            <li> <a href="/wiki/{{entry}} ">{{ entry }}</a> ------ <a style="padding-left: 0px;" href= "/wiki/editpage/{{entry}}"> edit </a> </li> 
         {% endfor %}
     </ul>
-{% endblock %}s
+{% endblock %}

@@ -9,5 +9,6 @@ urlpatterns = [
     #path("wiki/errorpage/", views.error_page, name="errorpage"),
     path("wiki/randompage", views.random_page, name="randompage"),
     path("wiki/searchpage", views.search_page, name="searchpage"),
-    path("wiki/<title>", views.title_page, name="titlepage")
+    path("wiki/editpage/<entry>", views.edit_page, name="editpage"),
+    path("wiki/<title>", views.title_page, name="titlepage"),
 ]

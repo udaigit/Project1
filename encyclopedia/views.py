@@ -4,8 +4,6 @@ import re
 from . import util
 import markdown
 import random
-
-
 def index(request):
     list_entry = util.list_entries()
     return render(request, "encyclopedia/index.html", {
@@ -16,7 +14,7 @@ def index(request):
 This function creates a new page and stores it in the entries folder
 """
 def new_page(request):
-    title_content = request.GET
+    title_content = request.GET #getting the contents from the page as a dictionary
     #check if None is being passed 
     exists = False
     try:
@@ -30,10 +28,11 @@ def new_page(request):
         if exists:
             return render(request, "encyclopedia/new_page.html",{'exists':exists})
         else:
-            #Add markdown title for the page
-            content = f"# {title}\n"+content
+            print("In new_page()")
+            print("Title being saved: ", title)
+            print("content being saved: ", content)
             util.save_entry(title, content)
-            return render(request, "encyclopedia/new_page.html",{'exists':exists})
+            return redirect(title_page, title)
 
 #this function checks if the entry submitted by the user already exists or not
 #Returns True if the entry exists and False if it does not.
@@ -91,37 +90,54 @@ def match_substring(list_entry, searchItem):
     
 
 def title_page(request, title):
-    p_html=""
+    print("In title_page()")
+    print("Attempt to display title: ", title)
     #process the title and retrieve content   
     lines = util.get_entry(title)
     if lines:
-        p_html = process(lines)
-        p_title = extract_title_body(p_html)
-        title_html = markdown_title_HTML(p_title)
-        body_html = markdown_body_HTML(p_title)  
+        print("Content to be displayed: ", lines)
+        #extract and convert the title from cmd file
+        m_title = extract_title(lines)
+        #print("extracted title : ", m_title.group(1))
+        title_html = markdown.markdown(m_title.group(1).strip())
+        #print("html_title: ", title_html)
+        
+        #extract and convert the body
+        p_body = extract_body(lines.strip())
+        print("Extracted Body: ",p_body.group(1))
+        body_html = markdown.markdown(p_body.group(1).strip())
         return render(request, "encyclopedia/title_page.html",\
                             {'title':title,'e_title':title_html,'md_html':body_html})
     else:
         return render(request,"encyclopedia/error_page.html",{"item":title})
 
-#processes the content to only include spaces
-def process(content):
-    p_html=""
-    for letter in content:
-            if not letter.isspace():
-                p_html=p_html+letter
-            else:
-                p_html+=" "    
-    return p_html
+#extracts the title from the markdown content         
+def extract_title(contents):
+    return re.match(r".*(#[ ]+[A-Za-z]+)(?:[.\*\.\f\n\r\t\w! ]*)", contents)
 
 #extracts the title from the markdown content         
-def extract_title_body(contents):
-    return re.match(r".*#[ ]+([A-za-z]+)[ ]+(.+)$", contents, re.M)
+def extract_body(contents):
+    print (contents)
+    return re.match(r".*#[ ]+(?:[A-Za-z]+)([./\*\(\)\]\[\.\-\f\n\r\t\w!# ]*)", contents)
 
-#convert markdown title to HTML
-def markdown_title_HTML(m):
-    return markdown.markdown("#"+m.group(1))
-
-#convert markdown body to HTML
-def markdown_body_HTML(m):
-    return markdown.markdown(m.group(2))
+old_title=""
+#This page recieves the entry argument from index.html page
+def edit_page(request, entry): #the variable names must be same in both files i.e., "entry"
+    global old_title
+    web_page = request.GET
+    #Just display the title and content to the user. Title is not editable
+    if not web_page:
+        print("Save is not pressed")
+        #process the title and retrieve content   
+        lines = util.get_entry(entry)
+        #save the title we are currently processing
+        old_title = entry.strip()
+        return render(request,"encyclopedia/edit_page.html", {'f_title':entry, 'f_body':lines})
+    #Save the edited content after user saves the button. The title is same. A new file
+    #with same title but old content is overwritted by the new content is created. 
+    else:
+        print("Save is pressed")
+        #content from text area
+        lines = web_page['edit_desc']  
+        util.save_entry(old_title, lines.strip())
+        return redirect(title_page, old_title)
