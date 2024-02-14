@@ -28,9 +28,6 @@ def new_page(request):
         if exists:
             return render(request, "encyclopedia/new_page.html",{'exists':exists})
         else:
-            print("In new_page()")
-            print("Title being saved: ", title)
-            print("content being saved: ", content)
             util.save_entry(title, content)
             return redirect(title_page, title)
 
@@ -55,9 +52,7 @@ def random_page(request):
 #searches for a give title. If not found then search for substrings that match the title
 #and if any display them to user as a list where they can click and go to that page
 def search_page(request):
-    #print("search_page method is called")
     searchItem = request.GET['q'] #'q' is the name of the form element - see layout.html
-    #print(searchItem)
     list_entry = util.list_entries() 
     found = match_exact(searchItem, list_entry)
     if found:
@@ -67,7 +62,6 @@ def search_page(request):
         #match not found
         #find all the matches of substrings from the list entries
         entries = match_substring(list_entry, searchItem)
-        #print ("Substring matching entries: ", entries)
         return render(request, "encyclopedia/search_page.html",\
                 {"search":searchItem, "entries":entries})
 
@@ -84,28 +78,22 @@ def match_substring(list_entry, searchItem):
     matches = list()
     for item in list_entry:
         if re.match(f".*{searchItem.lower()}.*",item.lower()):
-            #print("matching item", item)
             matches.append(item)   
     return matches
     
 
 def title_page(request, title):
-    print("In title_page()")
-    print("Attempt to display title: ", title)
     #process the title and retrieve content   
     lines = util.get_entry(title)
     if lines:
-        print("Content to be displayed: ", lines)
         #extract and convert the title from cmd file
         m_title = extract_title(lines)
-        #print("extracted title : ", m_title.group(1))
         title_html = markdown.markdown(m_title.group(1).strip())
-        #print("html_title: ", title_html)
         
         #extract and convert the body
         p_body = extract_body(lines.strip())
-        print("Extracted Body: ",p_body.group(1))
         body_html = markdown.markdown(p_body.group(1).strip())
+        body_html = body_html.strip("\r")
         return render(request, "encyclopedia/title_page.html",\
                             {'title':title,'e_title':title_html,'md_html':body_html})
     else:
@@ -117,7 +105,6 @@ def extract_title(contents):
 
 #extracts the title from the markdown content         
 def extract_body(contents):
-    print (contents)
     return re.match(r".*#[ ]+(?:[A-Za-z]+)([./\*\(\)\]\[\.\-\f\n\r\t\w!# ]*)", contents)
 
 old_title=""
@@ -127,17 +114,15 @@ def edit_page(request, entry): #the variable names must be same in both files i.
     web_page = request.GET
     #Just display the title and content to the user. Title is not editable
     if not web_page:
-        print("Save is not pressed")
         #process the title and retrieve content   
         lines = util.get_entry(entry)
         #save the title we are currently processing
         old_title = entry.strip()
-        return render(request,"encyclopedia/edit_page.html", {'f_title':entry, 'f_body':lines})
+        return render(request,"encyclopedia/edit_page.html", {'f_title':entry.strip(), 'f_body':lines.strip()})
     #Save the edited content after user saves the button. The title is same. A new file
     #with same title but old content is overwritted by the new content is created. 
     else:
-        print("Save is pressed")
         #content from text area
         lines = web_page['edit_desc']  
         util.save_entry(old_title, lines.strip())
-        return redirect(title_page, old_title)
+        return redirect(title_page, old_title.strip())

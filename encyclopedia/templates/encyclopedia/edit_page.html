@@ -7,6 +7,7 @@
 {% block body %}
     <h1>Edit Page</h1>
     <form>
+        {% csrf_token %}
         <div class="row"  style="padding: 0px;" >
             <div class="title col-lg-3 col-md-6">
                 <p style="margin-top: 20px; font:bold;">Title:</p>
@@ -15,8 +16,8 @@
         </div>
         <div class="row" style="padding: 0px;">
             <div class="title col-lg-12" style="text-align:left;">
-                 <p style="font:bold; margin-top: 15px;"> Description: </p>
-                <textarea style="height:200px; width:600px;" class="description" name="edit_desc"> {{f_body}} </textarea>
+                 <div class = "text_margin"> Description: </div>
+                <textarea class="text_description" name="edit_desc"> {{f_body}} </textarea>
             </div>
         </div>
         <div class="row" style="padding: 0px;text-align:center;">

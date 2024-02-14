@@ -1,5 +1,5 @@
 {% extends "encyclopedia/layout.html" %}
-
+{% load static%}
 {% block title %}
     Create New Page
 {% endblock %}
@@ -15,13 +15,13 @@
         </div>
         <div class="row" style="padding: 0px;">
             <div class="title col-lg-12" style="text-align:left;">
-                 <p style="font:bold; margin-top: 15px;"> Description: </p>
-                <textarea style="height:200px; width:600px" class="description" name="desc"> </textarea>
+                 <div class = "text_margin"> Description: </div>
+                <textarea class="text_description" name="desc"> </textarea>
             </div>
         </div>
         <div class="row" style="padding: 0px;text-align:center;">
             <div class="title col-md-4">
-                <button  class="submit" value="submit"> submit </button>
+                <button  class="submit" value="submit"> Save </button>
             </div>
         </div>
     </form>

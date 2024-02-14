@@ -1,5 +1,2 @@
 # JavaScript
-
-
-
-This is also written as JS.  HTML and CSS.
+This is a programming language.  This is used in conjunction with **CSS** and **HTML**.  Add a new line.
